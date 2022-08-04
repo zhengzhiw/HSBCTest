@@ -2,6 +2,7 @@ package currencyService;
 
 import entity.Currency;
 import entity.CurrencyBank;
+import io.netty.util.internal.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -68,17 +69,22 @@ public class CurrencyService {
         }
     }
 
-    public void save (Currency currency) {
-        boolean containsKey = bank.containsKey(currency.getCurrencyCode());
-        if (containsKey) {
-            bank.put(currency.getCurrencyCode(), bank.get(currency.getCurrencyCode()).add(currency.getAmount()));
-        } else {
-            bank.put(currency.getCurrencyCode(), currency.getAmount());
+    public boolean save (Currency currency) {
+        String currencyCode = currency.getCurrencyCode();
+        if (StringUtil.isNullOrEmpty(currencyCode)){
+            return false;
         }
-        if (bank.get(currency.getCurrencyCode()).compareTo(BigDecimal.ZERO) == 0) {
-            bank.remove(currency.getCurrencyCode());
+        boolean containsKey = bank.containsKey(currencyCode);
+        if (containsKey) {
+            bank.put(currencyCode, bank.get(currencyCode).add(currency.getAmount()));
+        } else {
+            bank.put(currencyCode, currency.getAmount());
+        }
+        if (bank.get(currencyCode).compareTo(BigDecimal.ZERO) == 0) {
+            bank.remove(currencyCode);
         }
         System.out.println(printAmount());
+        return true;
     }
     public void timerPrint(){
         // 开启打印输出任务

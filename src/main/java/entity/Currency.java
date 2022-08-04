@@ -1,5 +1,6 @@
 package entity;
 
+import currencyService.CurrencyService;
 import enums.CurrencyEnum;
 
 import java.math.BigDecimal;
@@ -22,9 +23,11 @@ public class Currency {
     }
 
     public Currency (String currencyCode, BigDecimal amount) {
-        validateCurrent(currencyCode);
-        this.currencyCode = currencyCode;
-        this.amount = amount;
+        boolean flag = validateCurrent(currencyCode);
+        if (flag){
+            this.currencyCode = currencyCode;
+            this.amount = amount;
+        }
     }
 
     public String getCurrencyCode () {
@@ -32,8 +35,10 @@ public class Currency {
     }
 
     public void setCurrencyCode (String currencyCode) {
-        validateCurrent(currencyCode);
-        this.currencyCode = currencyCode;
+        boolean flag = validateCurrent(currencyCode);
+        if (flag){
+            this.currencyCode = currencyCode;
+        }
     }
 
     public BigDecimal getAmount () {
@@ -44,11 +49,12 @@ public class Currency {
         this.amount = amount;
     }
 
-    private void validateCurrent (String currencyCode) throws RuntimeException {
+    private boolean validateCurrent (String currencyCode) throws RuntimeException {
         Stream<CurrencyEnum> stream = Arrays.stream(CurrencyEnum.values());
         boolean flag = stream.anyMatch(e -> e.getCurrencyName().equals(currencyCode));
         if (!flag) {
             System.out.println("输入的货币种类不存在！");
         }
+        return flag;
     }
 }

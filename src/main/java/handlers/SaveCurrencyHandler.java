@@ -10,12 +10,17 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaveCurrencyHandler implements RouteHandler {
+    @Override
     public void handle(MuRequest request, MuResponse response, Map<String,String> pathParams) {
+        saveRequest(request);
+        response.sendChunk(new CurrencyService().printAmount());
+    }
+
+    public Boolean saveRequest (MuRequest request) {
         String currencyStr = request.query().get("currency");
         double amount = request.query().getDouble("amount", 0);
         CurrencyService currencyService = new CurrencyService();
         Currency currency = new Currency(currencyStr,new BigDecimal(amount));
-        currencyService.save(currency);
-        response.sendChunk(currencyService.printAmount());
+        return currencyService.save(currency);
     }
 }
