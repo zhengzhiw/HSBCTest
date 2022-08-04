@@ -9,8 +9,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,22 +54,22 @@ public class CurrencyService {
         openScan();
     }
 
-    public void openScan(){
-        while (true){
+    public void openScan () {
+        while (true) {
             System.out.println("请输入金额,如:HKD 100");
             // 监听控制台数据
             Scanner sc = new Scanner(System.in);
             //读取字符串型输入
             String nextLine = sc.nextLine();
-            if ("quit".equals(nextLine)){
+            if ("quit".equals(nextLine)) {
                 System.exit(1);
                 return;
             }
             String[] strings = nextLine.split(" ");
-            if (strings.length == 2){
-                Currency currency = new Currency(strings[0],new BigDecimal(strings[1]));
+            if (strings.length == 2) {
+                Currency currency = new Currency(strings[0], new BigDecimal(strings[1]));
                 save(currency);
-            }else{
+            } else {
                 System.out.println("输入的格式不正确");
             }
         }
@@ -71,7 +77,7 @@ public class CurrencyService {
 
     public boolean save (Currency currency) {
         String currencyCode = currency.getCurrencyCode();
-        if (StringUtil.isNullOrEmpty(currencyCode)){
+        if (StringUtil.isNullOrEmpty(currencyCode)) {
             return false;
         }
         boolean containsKey = bank.containsKey(currencyCode);
@@ -86,22 +92,27 @@ public class CurrencyService {
         System.out.println(printAmount());
         return true;
     }
-    public void timerPrint(){
+
+    public void timerPrint () {
         // 开启打印输出任务
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
-            public void run() {
+            public void run () {
                 System.out.println(printAmount());
             }
-        },0,60000);
+        }, 0, 60000);
     }
+
     public String printAmount () {
         StringBuilder paymentStr = new StringBuilder();
-        paymentStr.append("------" + new Date(System.currentTimeMillis()).toString() + " 最新金额统计如下 ------");
-        bank.entrySet().stream().forEach(e -> {
+        paymentStr.append("------")
+                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINA)))
+                .append(" 最新金额统计如下 ------");
+        bank.forEach((key, value) -> {
             paymentStr.append("\r\n");
-            paymentStr.append(e.getKey() + " " + e.getValue());
+            paymentStr.append(key).append(" ").append(value);
+            paymentStr.append("\r\n");
         });
         return paymentStr.toString();
     }

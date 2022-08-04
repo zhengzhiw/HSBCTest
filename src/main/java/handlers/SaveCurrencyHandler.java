@@ -12,8 +12,9 @@ import java.util.Map;
 public class SaveCurrencyHandler implements RouteHandler {
     @Override
     public void handle(MuRequest request, MuResponse response, Map<String,String> pathParams) {
+        response.contentType("text/html;charset=utf-8");
         saveRequest(request);
-        response.sendChunk(new CurrencyService().printAmount());
+        response.sendChunk(new CurrencyService().printAmount().replaceAll("\\r\\n","<br>"));
     }
 
     public Boolean saveRequest (MuRequest request) {
