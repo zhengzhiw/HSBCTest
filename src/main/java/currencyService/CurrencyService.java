@@ -48,15 +48,24 @@ public class CurrencyService {
     }
 
     public void openScan(){
-        // 监听控制台数据
-        Scanner sc = new Scanner(System.in);
-        //读取字符串型输入
-        String[] strings = sc.nextLine().split(" ");
-        if (strings.length >= 2){
-            Currency currency = new Currency(strings[0],new BigDecimal(strings[1]));
-            save(currency);
+        while (true){
+            System.out.println("请输入金额,如:HKD 100");
+            // 监听控制台数据
+            Scanner sc = new Scanner(System.in);
+            //读取字符串型输入
+            String nextLine = sc.nextLine();
+            if ("quit".equals(nextLine)){
+                System.exit(1);
+                return;
+            }
+            String[] strings = nextLine.split(" ");
+            if (strings.length == 2){
+                Currency currency = new Currency(strings[0],new BigDecimal(strings[1]));
+                save(currency);
+            }else{
+                System.out.println("输入的格式不正确");
+            }
         }
-        printAmount();
     }
 
     public void save (Currency currency) {
@@ -79,14 +88,14 @@ public class CurrencyService {
             public void run() {
                 System.out.println(printAmount());
             }
-        },10000,60000);
+        },0,60000);
     }
     public String printAmount () {
         StringBuilder paymentStr = new StringBuilder();
-        paymentStr.append("=== " + new Date(System.currentTimeMillis()).toString() + " 最新金额统计如下  ===");
+        paymentStr.append("------" + new Date(System.currentTimeMillis()).toString() + " 最新金额统计如下 ------");
         bank.entrySet().stream().forEach(e -> {
             paymentStr.append("\r\n");
-            paymentStr.append(e.getKey() + "总额：" + e.getValue());
+            paymentStr.append(e.getKey() + " " + e.getValue());
         });
         return paymentStr.toString();
     }

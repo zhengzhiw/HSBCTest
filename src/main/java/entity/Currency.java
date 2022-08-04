@@ -48,9 +48,7 @@ public class Currency {
         Stream<CurrencyEnum> stream = Arrays.stream(CurrencyEnum.values());
         boolean flag = stream.anyMatch(e -> e.getCurrencyName().equals(currencyCode));
         if (!flag) {
-            throw new RuntimeException("输入的货币种类不存在！");
+            System.out.println("输入的货币种类不存在！");
         }
     }
-
-    ;
 }
