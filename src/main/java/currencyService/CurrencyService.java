@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CurrencyService {
     ConcurrentHashMap<String, BigDecimal> bank = CurrencyBank.getPayment();
 
-    public void readFile (String readPath) {
+    public void readFile (String readPath,boolean isTest) {
         if (readPath == null) {
             System.out.println("用户跳过文件读取");
             return;
@@ -37,7 +37,7 @@ public class CurrencyService {
                 fileReader = new FileReader(file);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 String readLine = null;
-                if ((readLine = bufferedReader.readLine()) != null) {
+                while ((readLine = bufferedReader.readLine()) != null) {
                     String[] strings = readLine.split(" ");
                     if (strings.length >= 2) {
                         Currency currency = new Currency(strings[0], new BigDecimal(strings[1]));
@@ -50,13 +50,15 @@ public class CurrencyService {
         } else {
             System.out.println("文件不存在");
         }
-        timerPrint();
-        openScan();
+        if (!isTest){
+            timerPrint();
+            openScan();
+        }
     }
 
     public void openScan () {
+        System.out.println("请输入金额,如:HKD 100");
         while (true) {
-            System.out.println("请输入金额,如:HKD 100");
             // 监听控制台数据
             Scanner sc = new Scanner(System.in);
             //读取字符串型输入
@@ -72,6 +74,7 @@ public class CurrencyService {
             } else {
                 System.out.println("输入的格式不正确");
             }
+            System.out.println("请输入金额,如:HKD 100");
         }
     }
 

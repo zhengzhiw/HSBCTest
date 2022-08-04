@@ -9,6 +9,7 @@ import io.muserver.MuServer;
 import static io.muserver.MuServerBuilder.muServer;
 import io.muserver.SsePublisher;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Scanner;
@@ -31,10 +32,21 @@ public class StartMain {
                             new Thread(() -> add(publisher, pathParams)).start();
                         }).start();
         System.out.println("Started server at " + server.uri());
-        System.out.println("请输入一个绝对路径的文件");
+        System.out.println("请输入一个绝对路径的文件，如 " + new StartMain().getAbsolutePath("data.txt"));
         Scanner scanner = new Scanner(System.in);
         String path = scanner.next();
-        new CurrencyService().readFile(path);
+        new CurrencyService().readFile(path,false);
+    }
+
+    private String getAbsolutePath (String fileName) {
+        String filePath = null;
+        String os = System.getProperty("os.name");
+        if (os != null && os.toLowerCase().startsWith("windows")) {
+            filePath = System.getProperty("user.dir") + File.separator + "src"+ File.separator+"main"+ File.separator+"resources" + File.separator + fileName;
+        } else if (os != null && os.toLowerCase().startsWith("linux")) {
+            filePath = StartMain.class.getClassLoader().getResource("").getPath() + fileName;
+        }
+        return filePath;
     }
 
     public static void add (SsePublisher publisher, Map<String, String> pathParams) {
@@ -60,6 +72,4 @@ public class StartMain {
         }
         publisher.close();
     }
-
-    ;
 }

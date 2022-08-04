@@ -1,5 +1,5 @@
 ###开发工具中启动
-使用idea打开项目，配置好maven、jdk后，导入项目jar包依赖之后，进入`src\main\java\currencyController\StartMain.java`运行main方法即可启动
+使用idea打开项目，配置好maven、jdk后，刷新maven导入项目jar包依赖之后，进入`src\main\java\currencyController\StartMain.java`运行main方法即可启动
 <br>做题思路：
 <br>1.启动类之后，使用单例模式实例化一个虚拟银行，每次输入从银行抵扣金额
 <br>2.使用Timer定时打印银行余额
